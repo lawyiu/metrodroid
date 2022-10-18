@@ -1,0 +1,52 @@
+name: Build iOS app
+on: push
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Get short commit SHA
+        run: echo SHORT_SHA=$(git rev-parse --short HEAD) >> $GITHUB_ENV
+
+      - name: Build app
+        run: |
+          export JAVA_HOME=$JAVA_HOME_11_X64
+          cd ./native/metrodroid
+          xcodebuild -project metrodroid.xcodeproj -scheme metrodroid -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+      - name: Archive app
+        run: |
+          export JAVA_HOME=$JAVA_HOME_11_X64
+          cd ./native/metrodroid
+          xcodebuild archive -project metrodroid.xcodeproj -scheme metrodroid -archivePath metrodroid_unsigned.xcarchive -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+      - name: Create ipa
+        run: |
+          cd ./native/metrodroid
+          mkdir Payload
+          cp -r metrodroid_unsigned.xcarchive/Products/Applications/metrodroid.app Payload/
+          cp ./metrodroid/metrodroid.entitlements Payload/metrodroid.app/
+          zip -r metrodroid_unsigned.ipa Payload
+          mv metrodroid_unsigned.ipa metrodroid_unsigned_${{ env.SHORT_SHA }}.ipa
+
+      - name: Zip xcarchive
+        run: |
+          cd ./native/metrodroid
+          zip -r metrodroid_unsigned.xcarchive.zip metrodroid_unsigned.xcarchive
+          mv metrodroid_unsigned.xcarchive.zip metrodroid_unsigned_${{ env.SHORT_SHA }}.xcarchive.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 #v1
+        with:
+          files: |
+            ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.ipa
+            ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.xcarchive.zip
+          tag_name: ${{ env.SHORT_SHA }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
