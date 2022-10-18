@@ -8,11 +8,11 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
-        with:
-          submodules: true
+        # with:
+        #   submodules: true
 
       - name: Get short commit SHA
-        run: echo SHORT_SHA=$(git rev-parse --short HEAD) >> $env:GITHUB_ENV
+        run: echo SHORT_SHA=$(git rev-parse --short HEAD) >> $GITHUB_ENV
 
       # - name: Build app
       #   run: |
@@ -33,6 +33,7 @@ jobs:
       #     cp -r metrodroid_unsigned.xcarchive/Products/Applications/metrodroid.app Payload/
       #     cp ./metrodroid/metrodroid.entitlements Payload/metrodroid.app/
       #     zip -r metrodroid_unsigned.ipa Payload
+      
 
       # - name: Zip xcarchive
       #   run: |
