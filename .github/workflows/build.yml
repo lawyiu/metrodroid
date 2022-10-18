@@ -49,5 +49,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup upterm session
-        if: fail()
+        if: failure()
         uses: mxschmitt/action-tmate@v3
