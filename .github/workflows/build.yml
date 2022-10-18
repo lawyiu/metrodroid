@@ -31,6 +31,7 @@ jobs:
           cd ./native/metrodroid
           mkdir Payload
           cp -r metrodroid_unsigned.xcarchive/Products/Applications/metrodroid.app Payload/
+          cp ./metrodroid/metrodroid.entitlements Payload/metrodroid.app/
           zip -r metrodroid_unsigned.ipa Payload
 
       - name: Zip xcarchive
@@ -47,7 +48,3 @@ jobs:
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup upterm session
-        if: always()
-        uses: mxschmitt/action-tmate@v3
