@@ -42,8 +42,8 @@ jobs:
 
       - name: Test
         run: |
-          touch ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.ipa
-          touch ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.xcarchive.zip
+          echo "1" > ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.ipa
+          echo "1" > ./native/metrodroid/metrodroid_unsigned_${{ env.SHORT_SHA }}.xcarchive.zip
 
       - name: Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 #v1
