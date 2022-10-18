@@ -45,6 +45,5 @@ jobs:
           files: |
             ./native/metrodroid/metrodroid_unsigned.ipa
             ./native/metrodroid/metrodroid_unsigned.xcarchive.zip
-          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
